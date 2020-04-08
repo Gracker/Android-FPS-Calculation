@@ -11,8 +11,14 @@ import android.view.FrameMetrics
 import android.view.Window
 import android.view.Window.OnFrameMetricsAvailableListener
 
-
 class FrameMetricsListener : Application.ActivityLifecycleCallbacks {
+    private var warningLevelMs = 0f
+    private var errorLevelMs = 0f
+    private var showWarning = false
+    private var showError = false
+
+    private val frameMetricsAvailableListenerMap: HashMap<String, OnFrameMetricsAvailableListener> =
+        HashMap()
 
     override fun onActivityPaused(activity: Activity) {
         stopFrameMetrics(activity);
@@ -37,14 +43,6 @@ class FrameMetricsListener : Application.ActivityLifecycleCallbacks {
         startFrameMetrics(activity);
     }
 
-    private var warningLevelMs = 0f
-    private var errorLevelMs = 0f
-    private var showWarning = false
-    private var showError = false
-
-    private val frameMetricsAvailableListenerMap: HashMap<String, OnFrameMetricsAvailableListener> =
-        HashMap()
-
     @TargetApi(Build.VERSION_CODES.N)
     fun startFrameMetrics(activity: Activity) {
         val activityName = activity.javaClass.simpleName
@@ -68,19 +66,45 @@ class FrameMetricsListener : Application.ActivityLifecycleCallbacks {
                             activityName,
                             totalDurationMs
                         )
+                        val inputMeasureDurationMs =
+                            (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.INPUT_HANDLING_DURATION)).toFloat()
+                        val animationDurationMs =
+                            (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.ANIMATION_DURATION)).toFloat()
                         val layoutMeasureDurationMs =
                             (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.LAYOUT_MEASURE_DURATION)).toFloat()
                         val drawDurationMs =
                             (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.DRAW_DURATION)).toFloat()
+                        val syncDurationMs =
+                            (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.SYNC_DURATION)).toFloat()
                         val gpuCommandMs =
                             (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.COMMAND_ISSUE_DURATION)).toFloat()
+                        val swapBufferDurationMs =
+                            (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.SWAP_BUFFERS_DURATION)).toFloat()
+                        val perFrameTotalDurationMs =
+                            (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION)).toFloat()
                         val othersMs =
                             totalDurationMs - layoutMeasureDurationMs - drawDurationMs - gpuCommandMs
                         val jankyPercent =
                             jankyFrames.toFloat() / allFrames * 100
                         msg += String.format(
-                            "Layout/measure: %.2fms, draw:%.2fms, gpuCommand:%.2fms others:%.2fms\n",
-                            layoutMeasureDurationMs, drawDurationMs, gpuCommandMs, othersMs
+                            "Activity : %s,  " +
+                                    " input: %.2fms" +
+                                    " animation: %.2fms " +
+                                    " Layout/measure: %.2fms, " +
+                                    " draw:%.2fms" +
+                                    " sync :%.2fms" +
+                                    " gpuCommand:%.2fms " +
+                                    " swapBuffer :%.2fms" +
+                                    " total:%.2fms\n",
+                            activityName,
+                            inputMeasureDurationMs,
+                            animationDurationMs,
+                            layoutMeasureDurationMs,
+                            drawDurationMs,
+                            syncDurationMs,
+                            gpuCommandMs,
+                            swapBufferDurationMs,
+                            perFrameTotalDurationMs
                         )
                         msg += "Janky frames: $jankyFrames/$allFrames($jankyPercent%)"
                         if (showWarning && totalDurationMs > errorLevelMs) {
