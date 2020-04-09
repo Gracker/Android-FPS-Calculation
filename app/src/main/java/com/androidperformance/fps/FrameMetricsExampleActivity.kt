@@ -1,14 +1,12 @@
 package com.androidperformance.fps
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_scrolling.*
 
-class ScrollingActivity : AppCompatActivity()  {
-    lateinit var frameMetricsListener : FrameMetricsListener
+class FrameMetricsExampleActivity : AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

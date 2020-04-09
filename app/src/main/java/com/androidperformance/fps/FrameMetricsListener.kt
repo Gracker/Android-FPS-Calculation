@@ -87,15 +87,17 @@ class FrameMetricsListener : Application.ActivityLifecycleCallbacks {
                         val jankyPercent =
                             jankyFrames.toFloat() / allFrames * 100
                         msg += String.format(
-                            "Activity : %s,  " +
-                                    " input: %.2fms" +
+                            "Activity : %s " +
+                                    " input: %.2fms " +
                                     " animation: %.2fms " +
-                                    " Layout/measure: %.2fms, " +
-                                    " draw:%.2fms" +
-                                    " sync :%.2fms" +
+                                    " Layout/measure: %.2fms " +
+                                    " draw:%.2fms " +
+                                    " sync :%.2fms " +
                                     " gpuCommand:%.2fms " +
-                                    " swapBuffer :%.2fms" +
-                                    " total:%.2fms\n",
+                                    " swapBuffer :%.2fms " +
+                                    " total:%.2fms " +
+                                    " jankyFrames :%d " +
+                                    " allFrames :%d\n ",
                             activityName,
                             inputMeasureDurationMs,
                             animationDurationMs,
@@ -104,7 +106,9 @@ class FrameMetricsListener : Application.ActivityLifecycleCallbacks {
                             syncDurationMs,
                             gpuCommandMs,
                             swapBufferDurationMs,
-                            perFrameTotalDurationMs
+                            perFrameTotalDurationMs,
+                            jankyFrames,
+                            allFrames
                         )
                         msg += "Janky frames: $jankyFrames/$allFrames($jankyPercent%)"
                         if (showWarning && totalDurationMs > errorLevelMs) {

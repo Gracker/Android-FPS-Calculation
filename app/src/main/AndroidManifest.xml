@@ -3,7 +3,7 @@
     package="com.androidperformance.fps">
 
     <application
-        android:name=".ScrollingApplication"
+        android:name=".FrameMetricsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ScrollingActivity"
+            android:name=".FrameMetricsExampleActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

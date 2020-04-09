@@ -1,3 +1,2 @@
 rootProject.name='Android_FPS_Calculation'
 include ':app'
-include ':broadcasttest'
